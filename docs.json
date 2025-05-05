@@ -3,14 +3,19 @@
   "theme": "mint",
   "name": "Dos",
   "colors": {
-    "primary": "#0255FF"
+    "primary": "#16A34A"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "navigation": {
     "tabs": [
       {
-        "tab": "Quotes API",
-        "openapi": "services/quotes/openapi.yaml"
+        "tab": "Quotes App",
+        "versions": [
+          {
+            "version": "v1",
+            "openapi": "services/quotes/openapi-v1.yaml"
+          }
+        ]
       }
     ]
   },

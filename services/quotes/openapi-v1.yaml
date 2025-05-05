@@ -1,0 +1,240 @@
+openapi: 3.0.0
+info:
+  title: Dos Quotes API
+  version: "1.0.0"
+
+tags:
+  - name: Authentication
+    description: OAuth2 flows via Doorkeeper
+  - name: Users
+    description: Endpoints for user profile
+  - name: Leads
+    description: Endpoints for listing and managing leads
+
+servers:
+  - url: https://app.dosfinds.co.uk
+    description: Production
+
+paths:
+  /api/v1/leads:
+    get:
+      tags:
+        - Leads
+      summary: List all leads
+      description: Returns a list of leads in JSON format.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - service_name
+                    - service_slug
+                    - client_name
+                    - client_email
+                    - client_phone_number
+                    - created_at
+                    - service_question_answers
+                  properties:
+                    id:
+                      type: integer
+                      example: 123
+                    service_name:
+                      type: string
+                      example: "Immigration"
+                    service_slug:
+                      type: string
+                      example: "immigration"
+                    client_name:
+                      type: string
+                      example: "John Doe"
+                    client_email:
+                      type: string
+                      format: email
+                      example: "john.doe@example.com"
+                    client_phone_number:
+                      type: string
+                      example: "+441234567890"
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2025-05-04T12:34:56Z"
+                    service_question_answers:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - question
+                          - slug
+                          - answer
+                        properties:
+                          question:
+                            type: string
+                            example: "What is your nationality?"
+                          slug:
+                            type: string
+                            example: "nationality"
+                          answer:
+                            type: string
+                            example: "British"
+
+  /oauth/authorize:
+    get:
+      tags:
+        - Authentication
+      summary: Redirect user to consent screen (Authorization Code)
+      parameters:
+        - in: query
+          name: response_type
+          schema:
+            type: string
+            enum: [code]
+          required: true
+          description: Must be `code`
+        - in: query
+          name: client_id
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: redirect_uri
+          schema:
+            type: string
+            format: uri
+          required: true
+        - in: query
+          name: scope
+          schema:
+            type: string
+          description: Space-separated scopes
+        - in: query
+          name: state
+          schema:
+            type: string
+          description: Opaque value to maintain state
+      responses:
+        "302":
+          description: Redirects to `redirect_uri` with `?code={code}&state={state}`
+
+  /oauth/token:
+    post:
+      tags:
+        - Authentication
+      summary: Exchange code or credentials for an access token
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - grant_type
+              properties:
+                grant_type:
+                  type: string
+                  enum: [authorization_code, refresh_token, client_credentials]
+                code:
+                  type: string
+                  description: Authorization code (for `authorization_code` flow)
+                redirect_uri:
+                  type: string
+                  format: uri
+                  description: Must match the one used in authorize
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+                refresh_token:
+                  type: string
+                  description: Refresh token (for `refresh_token` flow)
+                scope:
+                  type: string
+                  description: Requested scopes (optional)
+      responses:
+        "200":
+          description: Access token response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - access_token
+                  - token_type
+                  - expires_in
+                  - created_at
+                properties:
+                  access_token:
+                    type: string
+                    example: abc123
+                  token_type:
+                    type: string
+                    example: Bearer
+                  expires_in:
+                    type: integer
+                    example: 7200
+                  refresh_token:
+                    type: string
+                    example: def456
+                  created_at:
+                    type: integer
+                    example: 1618884471
+
+  /oauth/revoke:
+    post:
+      tags:
+        - Authentication
+      summary: Revoke an access or refresh token
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                token_type_hint:
+                  type: string
+                  enum: [access_token, refresh_token]
+      responses:
+        "200":
+          description: Token revoked successfully
+
+  /api/v1/user/me:
+    get:
+      tags:
+        - Users
+      summary: Get current user
+      description: Returns the authenticated user’s email.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User info
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - email
+                properties:
+                  email:
+                    type: string
+                    format: email
+                    example: user@example.com
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
