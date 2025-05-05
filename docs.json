@@ -10,7 +10,7 @@
     "tabs": [
       {
         "tab": "Quotes API",
-        "openapi": "/services/quotes/openapi.yaml"
+        "openapi": "services/quotes/openapi.yaml"
       }
     ]
   },
