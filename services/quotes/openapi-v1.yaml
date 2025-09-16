@@ -41,7 +41,9 @@ paths:
                     - client_email
                     - client_phone_number
                     - created_at
+                    - client_address
                     - service_question_answers
+                    - all_details_one_liner
                   properties:
                     id:
                       type: integer
@@ -52,6 +54,10 @@ paths:
                     service_slug:
                       type: string
                       example: "immigration"
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2025-05-04T12:34:56Z"
                     client_name:
                       type: string
                       example: "John Doe"
@@ -62,10 +68,15 @@ paths:
                     client_phone_number:
                       type: string
                       example: "+441234567890"
-                    created_at:
-                      type: string
-                      format: date-time
-                      example: "2025-05-04T12:34:56Z"
+                    client_address:
+                      type: object
+                      nullable: true
+                      required:
+                        - friendly_address
+                      properties:
+                        friendly_address:
+                          type: string
+                          example: "London, England, SW11 3PG"
                     service_question_answers:
                       type: array
                       items:
@@ -84,6 +95,14 @@ paths:
                           answer:
                             type: string
                             example: "British"
+                    all_details_one_liner:
+                      type: string
+                      description: Concatenated questions/answers and address in a single string.
+                      example: |
+                        What is your nationality?
+                        British
+                        --
+                        Address: Online - London, England, SW11 3PG
 
   /oauth/authorize:
     get:
