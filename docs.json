@@ -1,11 +1,15 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Dos",
+  "name": "Paravo",
   "colors": {
     "primary": "#16A34A"
   },
-  "favicon": "/favicon.png",
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
   "navigation": {
     "tabs": [
       {
@@ -23,7 +27,7 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:team@dosfinds.com"
+        "href": "mailto:team@paravo.com"
       }
     ]
   }

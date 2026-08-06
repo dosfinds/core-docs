@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Dos Quotes API
+  title: Paravo Quotes API
   version: "1.0.0"
 
 tags:
@@ -12,7 +12,7 @@ tags:
     description: Endpoints for listing and managing leads
 
 servers:
-  - url: https://app.dosfinds.co.uk
+  - url: https://app.paravo.co.uk
     description: Production
 
 paths:
