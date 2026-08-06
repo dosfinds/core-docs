@@ -12,7 +12,7 @@ tags:
     description: Endpoints for listing and managing leads
 
 servers:
-  - url: https://app.paravo.co.uk
+  - url: https://app.paravo.co.uk/leads
     description: Production
 
 paths:
